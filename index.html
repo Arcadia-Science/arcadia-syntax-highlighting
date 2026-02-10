@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcadia Syntax Theme Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600&family=Chivo+Mono:wght@300&family=Merriweather&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      color: rgb(26, 23, 24);
+      background: #FDF8F2;
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      padding: 20px 24px;
+      border-bottom: 1px solid #BAB0A8;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #FFFFFF;
+    }
+
+    .header h1 {
+      font-family: Merriweather, Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 27px;
+    }
+
+    .header-body {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .header-description {
+      font-size: 13px;
+      color: #8F8885;
+      line-height: 1.5;
+      max-width: 700px;
+    }
+
+    .load-btn {
+      padding: 8px 16px;
+      background: #FFFFFF;
+      color: rgb(26, 23, 24);
+      border: 1px solid #BAB0A8;
+      border-radius: 6px;
+      font-family: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      white-space: nowrap;
+      align-self: stretch;
+    }
+
+    .load-btn:hover { border-color: #09090A; }
+
+    .sidebar {
+      padding: 12px 16px;
+      overflow-y: auto;
+      border-right: 1px solid #BAB0A8;
+      background: #FFFFFF;
+      position: relative;
+      min-height: 0;
+    }
+
+    .preview {
+      padding: 8px;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    .preview pre {
+      border-radius: 8px;
+      padding: 16px !important;
+      font-family: "Chivo Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.6;
+      width: 100%;
+    }
+
+    .preview .loading {
+      color: #8F8885;
+      font-size: 14px;
+      padding: 40px;
+    }
+
+    .footer {
+      grid-column: 1 / -1;
+      padding: 12px 24px;
+      border-top: 1px solid #BAB0A8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #FFFFFF;
+    }
+
+    .footer-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 8px;
+    }
+
+    .footer-name label {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .footer-name input {
+      padding: 6px 10px;
+      border: 1px solid #BAB0A8;
+      border-radius: 4px;
+      font-family: "Chivo Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 300;
+      font-size: 14px;
+      background: #FDF8F2;
+      width: 180px;
+    }
+
+    .footer-name input:focus {
+      outline: none;
+      border-color: #5088C5;
+    }
+
+    .footer-separator {
+      width: 1px;
+      height: 28px;
+      background: #BAB0A8;
+      margin: 0 4px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8F8885;
+      padding: 14px 0 6px;
+      border-bottom: 1px solid #EBEDE8;
+      margin-bottom: 2px;
+    }
+
+    .section-label:first-child {
+      padding-top: 0;
+    }
+
+    .token-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      position: relative;
+    }
+
+    .token-label {
+      width: 90px;
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .color-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #BAB0A8;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.15s;
+      padding: 0;
+    }
+
+    .color-btn:hover {
+      border-color: #09090A;
+    }
+
+    .color-name {
+      font-size: 11px;
+      color: #8F8885;
+      font-family: "Chivo Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 300;
+    }
+
+    .style-toggles {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .style-toggle {
+      width: 22px;
+      height: 22px;
+      border: 1px solid #BAB0A8;
+      border-radius: 3px;
+      background: #FFFFFF;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 22px;
+      text-align: center;
+      padding: 0;
+      color: #BAB0A8;
+      transition: all 0.1s;
+      font-family: Georgia, serif;
+    }
+
+    .style-toggle:hover {
+      border-color: #43413F;
+      color: #43413F;
+    }
+
+    .style-toggle.active {
+      background: #43413F;
+      border-color: #43413F;
+      color: #FFFFFF;
+    }
+
+    .style-toggle-bold {
+      font-weight: 700;
+    }
+
+    .style-toggle-italic {
+      font-style: italic;
+    }
+
+    .popover {
+      position: fixed;
+      background: white;
+      border: 1px solid #BAB0A8;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 100;
+      width: 260px;
+      display: none;
+    }
+
+    .popover.open { display: block; }
+
+    .palette-group-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #8F8885;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 8px 0 4px;
+    }
+
+    .palette-group-label:first-child { margin-top: 0; }
+
+    .palette-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: border-color 0.1s;
+      position: relative;
+    }
+
+    .swatch:hover { border-color: #09090A; }
+
+    .swatch::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #09090A;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-family: "Chivo Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 300;
+      padding: 3px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      transition-delay: 0s;
+      z-index: 100;
+    }
+
+    .swatch:hover::after {
+      opacity: 1;
+      transition-delay: 0.2s;
+    }
+
+    .swatch.selected {
+      border-color: #09090A;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #09090A;
+    }
+
+    .custom-color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #EBEDE8;
+    }
+
+    .custom-color-input {
+      width: 28px;
+      height: 28px;
+      border: none;
+      padding: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      background: none;
+    }
+
+    .custom-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .custom-color-input::-webkit-color-swatch { border-radius: 50%; border: 2px solid #BAB0A8; }
+
+    .custom-color-label {
+      font-size: 11px;
+      color: #8F8885;
+    }
+
+    .export-btn {
+      padding: 8px 16px;
+      background: #5088C5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-family: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .export-btn:hover { background: #2B65A1; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>Arcadia Syntax Theme Builder</h1>
+      <div class="header-body">
+        <button class="load-btn" id="load-btn">Load theme file</button>
+        <input type="file" id="load-input" accept=".tmTheme,.theme,.json,.zip" hidden>
+        <p class="header-description">
+          Pick colors from the Arcadia brand palette for each syntax token category and preview the result on real code.
+          Export downloads a .zip containing TextMate (.tmTheme) for VS Code/Sublime, Pandoc (.theme) for Quarto notebook pubs, and VS Code JSON.
+          Load any previously exported file to resume editing.
+        </p>
+      </div>
+    </div>
+    <div class="sidebar" id="sidebar"></div>
+    <div class="preview" id="preview">
+      <div class="loading">Loading syntax highlighter...</div>
+    </div>
+    <div class="footer">
+      <div class="footer-name">
+        <label for="theme-name">Name</label>
+        <input type="text" id="theme-name" value="arcadia-light" placeholder="Theme name">
+      </div>
+      <div class="footer-separator"></div>
+      <button class="load-btn" id="export-zip">Export Theme</button>
+    </div>
+  </div>
+  <div class="popover" id="popover"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
