@@ -573,7 +573,7 @@ function buildPandocTheme() {
   const textStyles = {};
   for (const tok of ALL_PANDOC_TOKENS) {
     const s = tokenToStyle[tok] || { bold: false, italic: false };
-    textStyles[tok + "Tok"] = {
+    textStyles[tok] = {
       "text-color": tokenToColor[tok] || null,
       "background-color": null,
       "bold": s.bold,
