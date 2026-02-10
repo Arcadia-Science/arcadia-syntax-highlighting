@@ -87,6 +87,12 @@ const TOKEN_CATEGORIES = [
     pandocTokens: ["DataType"],
   },
   {
+    id: "class",
+    label: "Class",
+    tmScopes: ["entity.name.type.class"],
+    pandocTokens: [],
+  },
+  {
     id: "variable",
     label: "Variable",
     tmScopes: ["variable", "variable.parameter"],
@@ -156,7 +162,7 @@ from arcadia_pycolor.utils import (
 
 
 @dataclass
-class Anchor:
+class Anchor(Base):
     """
     A paired color and position value for a gradient.
 
@@ -401,35 +407,37 @@ class Gradient:
 `;
 
 const state = {
-  background: "#282828",
-  foreground: "#ebdbb2",
-  keyword: "#fb4934",
-  string: "#b8bb26",
-  comment: "#928374",
-  function: "#b8bb26",
-  type: "#fabd2f",
-  variable: "#83a598",
-  number: "#d3869b",
-  operator: "#fe8019",
-  constant: "#d3869b",
-  import: "#8ec07c",
-  attribute: "#8ec07c",
-  error: "#fb4934",
+  background: "#f6f6f6",
+  foreground: "#2f3337",
+  keyword: "#015692",
+  string: "#54790d",
+  comment: "#656e77",
+  function: "#b75501",
+  type: "#015692",
+  class: "#b65602",
+  variable: "#2f3337",
+  number: "#b75501",
+  operator: "#015692",
+  constant: "#b75501",
+  import: "#015692",
+  attribute: "#015692",
+  error: "#9E3F41",
 };
 
 const styleState = {
-  keyword: { bold: false, italic: false },
+  keyword: { bold: true, italic: false },
   string: { bold: false, italic: true },
   comment: { bold: false, italic: true },
   function: { bold: true, italic: false },
-  type: { bold: false, italic: false },
+  type: { bold: true, italic: false },
+  class: { bold: true, italic: false },
   variable: { bold: false, italic: false },
   number: { bold: false, italic: false },
   operator: { bold: false, italic: false },
   constant: { bold: false, italic: false },
   import: { bold: false, italic: false },
   attribute: { bold: false, italic: false },
-  error: { bold: true, italic: false },
+  error: { bold: false, italic: false },
 };
 
 let activePopoverTarget = null;
